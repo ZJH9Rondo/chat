@@ -1,0 +1,22 @@
+doctype html
+html
+  head
+    meta(http-equiv="Content-Type",content="text/html; charset=utf-8")
+    meta(name="viewport" content="width=device-width,initial-scale=1,user-scalable=0")
+    title WeChat
+    <!-- WEUI -->
+    link(rel="stylesheet" href="/styles/weui.min.css" media="screen" title="no title")
+    link(rel="stylesheet" href="/styles/jquery-weui.min.css" media="screen" title="no title")
+    link(rel="stylesheet" href="/styles/main.css" media="screen" title="no title")
+  body
+  header(class="header")
+    h1(class="demos-title") chat
+  div(class="page")
+    div(id="message-ctn")
+  footer(class="footer")
+    div(class="chat-main")
+    input(type="text" class="message-input" id="message")
+    input(type="button" value="发送" id='send')
+  script(src='/javascripts/jquery-2.1.4.js')
+  script(src='/javascripts/socket.io.js')
+  script(src='/javascripts/chat.js')

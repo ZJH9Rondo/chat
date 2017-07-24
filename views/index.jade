@@ -1,0 +1,23 @@
+doctype html
+html
+  head
+    meta(http-equiv="Content-Type",content="text/html; charset=utf-8")
+    meta(name="viewport" content="width=device-width,initial-scale=1,user-scalable=0")
+    title WeChat
+    <!-- WEUI -->
+    link(rel="stylesheet" href="/styles/main.css" media="screen" title="no title")
+    link(rel="stylesheet" href="/styles/weui.min.css" media="screen" title="no title")
+    link(rel="stylesheet" href="/styles/jquery-weui.min.css" media="screen" title="no title")
+  body
+  header(class="header")
+    h1(class="demos-title") chat
+  div(id='cover-main')
+    div(class='sign-main')
+      input(id='nick' type='text')
+      input(id='signup' type='button' value='Go chat')
+  div(class="page")
+    div(class="message-ctn")
+  footer(class="footer")
+  script(src='/javascripts/jquery-2.1.4.js')
+  script(src='/javascripts/application.js')
+  script(src='/javascripts/socket.io.js')
