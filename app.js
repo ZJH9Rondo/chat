@@ -8,7 +8,8 @@ const app     = express();
 const server  = require('http').createServer(app);
 const io  = require('socket.io').listen(server);
 const routes  = require('./routes/connect');
-const sockets = [];
+const chaters = {};
+const userAndSocketidMap = {};
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -17,40 +18,24 @@ app.set('view engine', 'jade'); // 模板引擎 jade
 //  静态文件目录
 app.use(express.static(path.join(__dirname,'public')));
 
-
 //  socket
 io.on('connection',(socket) => {
-    socket.on('message',(data) => {
-      let flag = 0;
-      if(sockets.length === 0){
-        sockets.push({
-          "socket": socket, 
-          "name": data.chat_with,
-        });
-        sockets[0].socket.emit('message',data.to);
-        console.log(sockets);
-        return;
-      }
-
-      for(let i in sockets){
-        if(data.chat_with === sockets[i].name){
-          if(sockets[i].socket !== socket){
-            sockets[i].socket = socket;
-          }
-          sockets[i].socket.emit('message',data.chachat_with);
-          flag = 1;
+    socket.on('online',(data) => {
+        socket.name = data.from;
+        if(chaters[data.from]){
+          userAndSocketidMap[data.from] = socket.id;
           return;
+        }else{
+          chaters[data.from] = data.from;
+          userAndSocketidMap[data.from] = socket.id;
+          io.emit('online',{"chaters": chaters});
         }
-      }
+    });
 
-      if(flag === 0){
-        sockets.push({
-          "socket": socket,
-          "name": data.chat_with
-        });
-        socket.emit('message',data.chat_with);
+    socket.on('message',(data) => {
+      if(userAndSocketidMap[data.to]){
+        io.sockets.connected[userAndSocketidMap[data.to]].emit('message',data.body); //获取指定的socket链接对象
       }
-      console.log(sockets);
     });
 });
 
@@ -58,7 +43,7 @@ io.on('connection',(socket) => {
 app.get('/',(req,res,next) => {
   res.render('index');
 });
-routes(app,sockets);
+routes(app,chaters);
 
 server.listen(3000);
 
