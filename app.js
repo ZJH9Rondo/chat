@@ -23,7 +23,7 @@ io.on('connection',(socket) => {
     socket.on('online',(data) => {
         socket.name = data.from;
         if(chaters[data.from]){
-          userAndSocketidMap[data.from] = socket.id;
+          userAndSocketidMap[data.from] = socket.id; //用户进入聊天页刷新连接
           return;
         }else{
           chaters[data.from] = data.from;
@@ -35,6 +35,18 @@ io.on('connection',(socket) => {
     socket.on('message',(data) => {
       if(userAndSocketidMap[data.to]){
         io.sockets.connected[userAndSocketidMap[data.to]].emit('message',data.body); //获取指定的socket链接对象
+      }else{
+        io.sockets.connected[userAndSocketidMap[data.from]].emit('message','对方未上线');
+      }
+    });
+
+    socket.on('offline',(data) => {
+      if(chaters[data.from]){
+        if(chaters[data.to]){
+          io.sockets.connected[userAndSocketidMap[data.to]].emit('offline',data.body);
+        }
+        delete chaters[data.from];
+        delete userAndSocketidMap[data.from];
       }
     });
 });

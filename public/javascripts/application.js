@@ -11,7 +11,7 @@
       // 获取在线好友
       function get_Inline(chaters){
         // 生成Dom 显示在线人数
-        function create_mes(chater){
+        function create_chater(chater){
           let message = document.createElement('div');
 
           message.className = 'message';
@@ -20,15 +20,16 @@
         }
 
         let messages = document.getElementsByClassName('message');
+        // 避免生成重复在线成员
         if(messages.length === 0){
           for(let chater in chaters){
-            create_mes(chater);
+            create_chater(chater);
           }
         }else{
             let i = 0;
             for(let chater in chaters){
               if(i === messages.length){
-                create_mes(chater);
+                create_chater(chater);
               }
               i++;
             }
@@ -49,7 +50,7 @@
                 success: (data) => {
 
                     data = JSON.parse(data);
-                    window.open(data.redirect);
+                    window.open(data.redirect); //打开聊天框
                     // 跨document通信
                     window.addEventListener('message',(e) => {
                       if(e.origin == 'http://127.0.0.1:3000'){
