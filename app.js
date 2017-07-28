@@ -3,13 +3,14 @@
 *   21/07/2017
 */
 const express = require('express');
-const path    = require('path');
-const app     = express();
+const path  = require('path');
+const fs  = require('fs');
+const app = express();
 const server  = require('http').createServer(app);
 const io  = require('socket.io').listen(server);
 const routes  = require('./routes/connect');
 const chaters = {};
-const userAndSocketidMap = {};
+const userAndSocketidMap  = {};
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -35,6 +36,15 @@ io.on('connection',(socket) => {
     socket.on('message',(data) => {
       if(userAndSocketidMap[data.to]){
         io.sockets.connected[userAndSocketidMap[data.to]].emit('message',data.body); //获取指定的socket链接对象
+
+        // 写入聊天记录
+        fs.open('./doc/record/'+ data.from +'.text','a+',(err,fd) => {
+            if(err) throw err;
+
+            fs.writeFile(fd,'发送人:' + data.from + '接收方:' + data.to + '内容:' + data.body + '时间:' + new Date() +'\n',(err) => {
+               if(err) throw err;
+            });
+        });
       }else{
         io.sockets.connected[userAndSocketidMap[data.from]].emit('message','对方未上线');
       }

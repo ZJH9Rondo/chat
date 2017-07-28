@@ -29,22 +29,24 @@
     // send message
     send.addEventListener("click", () => {
         let message_self = document.createElement('p'),
-            message_ctn = document.getElementById('message-ctn');
+            message_ctn = document.getElementById('message-ctn'),
+            time = new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds();
 
         socket.emit('message',{"from": user_nick,"to": chat_name,"body": message.value});
-        message_self.className = 'message_self';
-        message_self.innerText = message.value;
         message_ctn.appendChild(message_self);
+        message_self.className = 'message_self';
+        message_self.innerHTML = '<p class="message_time">'+ Number(new Date().getMonth() + 1)+'月'+ new Date().getDate() + '日' + time + '</p>' + message.value;
     });
 
     // display chat message
     socket.on('message',(data) => {
         let message_res = document.createElement('p'),
-            message_ctn = document.getElementById('message-ctn');
+            message_ctn = document.getElementById('message-ctn'),
+            time = new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds();
 
-        message_res.className = 'message_res';
-        message_res.innerText = data;
         message_ctn.appendChild(message_res);
+        message_res.className = 'message_res';
+        message_res.innerHTML = '<p class="message_time">'+ Number(new Date().getMonth() + 1)+'月'+ new Date().getDate() + '日' + time + '</p>' + data;
     });
 
     // chater offline
